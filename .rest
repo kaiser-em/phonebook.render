@@ -1,13 +1,40 @@
-GET http://localhost:3001/api/persons
+GET http://localhost:3001/api/persons/6a19dd6316328b34f26ca6a4
 
 ###
-DELETE http://localhost:3001/api/persons/2
+GET http://localhost:3001/info
+###
+DELETE http://localhost:3001/api/persons/6a1a822e63a4bd1465a12e10
 
 ###
 POST http://localhost:3001/api/persons/
 content-Type: application/json
 
 {
-    "name" : "Elisabeth ",
-    "number" : "33-547-878945"
+    "name" : "Elisabeth bofy ",
+    "number" : "33-547-457787"
+}
+
+###
+GET https://phonebook-render-80d4.onrender.com/api/persons/4
+
+###
+POST https://phonebook-render-80d4.onrender.com/api/persons/
+Content-Type: application/json
+
+{
+    "name": "Mahery Victor",
+    "number": "256- 6578 675675"
+}
+
+###
+DELETE https://phonebook-render-80d4.onrender.com/api/persons/4
+
+
+###
+PUT http://localhost:3001/api/persons/6a19dd6316328b34f26ca6a4
+Content-Type: application/json
+
+{
+    "name" : "Bernard Blue",
+    "number": "00000000000"
 }
