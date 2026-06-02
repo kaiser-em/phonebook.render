@@ -17,8 +17,18 @@ const url = process.env.MONGODB_URI
 
 
 const personSchema = new mongoose.Schema({
-    name: String, 
-    number : String,
+    name : {
+        type: String,
+        minLength : 3,
+        required: true
+    },
+    number :{ type: String,
+        validate:{
+            validator : (v)=> /\d{3}-\d{7}/.test(v) ,
+            validator: (v)=> /\d{2}-\d{7}/.test(v)
+        },
+        message: props => `${props.value} is not a valid phone number`,
+        required: [, "user phone number required"]},
 })
 
 

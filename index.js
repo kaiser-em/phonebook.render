@@ -2,6 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 import Person from './models/person.js'
 import unknownEndpoint from './Middlewares/endpoint.js'
+import errorHandler from './Middlewares/errorHandler.js'
 import morgan from 'morgan'
 
 
@@ -17,28 +18,6 @@ morgan.token('req-body',(req)=>{
 })
 
 app.use(morgan(':method :url :status :res[content-length]:response-time ms :req-body'))
-let persons = [
-    { 
-      "id": "1",
-      "name": "Arto Hellas", 
-      "number": "040-123456"
-    },
-    { 
-      "id": "2",
-      "name": "Ada Lovelace", 
-      "number": "39-44-5323523"
-    },
-    { 
-      "id": "3",
-      "name": "Dan Abramov", 
-      "number": "12-43-234345"
-    },
-    { 
-      "id": "4",
-      "name": "Mary Poppendieck", 
-      "number": "39-23-6423122"
-    }
-]
 
 
 app.get('/api/persons', (req, res)=>{
@@ -49,7 +28,7 @@ app.get('/api/persons', (req, res)=>{
             res.json(persons)
             persons.concat(persons)
         })
-    
+        .catch(error => next(error))
 })
 
 app.get('/info', (req, res)=>{
@@ -67,7 +46,7 @@ const date = new Date()
   
 })
 
-app.get('/api/persons/:id', (req, res)=>{
+app.get('/api/persons/:id', (req, res, next)=>{
     Person 
         .findById(req.params.id)
         .then(person =>{
@@ -77,16 +56,18 @@ app.get('/api/persons/:id', (req, res)=>{
                 res.status(404).json({error : 'peson not found'})
             }
         })
+        .catch(error => next(error))
     
 })
 
-app.delete('/api/persons/:id', (req, res)=>{
+app.delete('/api/persons/:id', (req, res, next)=>{
     Person
         .findByIdAndDelete(req.params.id)
         .then(result => {
             console.log('deleted from phonebook', result.name + " " + result.number)
-            res.json(result)
+            res.status(204).end()
         })
+        .catch(error => next(error))
 
 })
 
@@ -101,9 +82,7 @@ app.delete('/api/persons/:id', (req, res)=>{
         return code.join('')
     }*/
     
-
-
-app.post('/api/persons', (req, res)=>{
+app.post('/api/persons', (req, res, next)=>{
     const body = req.body
 
     const person = new Person({
@@ -111,36 +90,38 @@ app.post('/api/persons', (req, res)=>{
         number : body.number,
     })
 
-
     person.save().then(result =>{
         console.log('added', result.name + " " + result.number)
         res.json(result)
     })
+    .catch(error =>next(error))
     
-
 })
 
-app.put('/api/persons/:id', (req, res)=>{
-    const id = req.params.id
+app.put('/api/persons/:id', (req, res, next)=>{
     const body = req.body
 
-    const person = {
-        name : body.name,
-        number : body.number
-    }
+    const {name, number} = req.body
 
+   
     Person
-        .findByIdAndUpdate(id, person, {new: true, runValidators : true})
-        .then(result =>{ 
-            console.log('updated', result.name + " " + result.number)
-            res.json(result)
+        .findById(req.params.id)
+        .then(person =>{
+            if(!person){
+                res.status(404).end()
+            }
+
+            person.name = name
+            person.number = number
+
+            return person.save().then(updatedPerson =>{
+                res.json(updatedPerson)
+            } )
         })
-        .catch(error => {
-            console.log('error updating:', error.message)
-            res.status(400).json({error: 'update failed'})
-        })
+        .catch(error => next(error))
 })
 
+app.use(errorHandler)
 
 const PORT = process.env.PORT 
 app.listen(PORT)

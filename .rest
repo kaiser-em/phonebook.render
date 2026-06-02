@@ -1,17 +1,17 @@
-GET http://localhost:3001/api/persons/6a19dd6316328b34f26ca6a4
+GET http://localhost:3001/api/persons/maforMedId
 
 ###
 GET http://localhost:3001/info
 ###
-DELETE http://localhost:3001/api/persons/6a1a822e63a4bd1465a12e10
+DELETE http://localhost:3001/api/persons/6a1aa325fcebe6fa4cb29048
 
 ###
 POST http://localhost:3001/api/persons/
 content-Type: application/json
 
 {
-    "name" : "Elisabeth bofy ",
-    "number" : "33-547-457787"
+    "name" : "Murielle",
+    "number" : "378"
 }
 
 ###
@@ -31,10 +31,10 @@ DELETE https://phonebook-render-80d4.onrender.com/api/persons/4
 
 
 ###
-PUT http://localhost:3001/api/persons/6a19dd6316328b34f26ca6a4
+PUT http://localhost:3001/api/persons/6a19ddee75d069fec3aa7fe8
 Content-Type: application/json
 
 {
-    "name" : "Bernard Blue",
-    "number": "00000000000"
+    "name" : "Ellis Migo",
+    "number": "261-87855556675"
 }
